@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro - API de Avisos</title>
+    <style>
+        :root {
+            --light-bg: #F6F6F6;
+            --secondary-bg: #E8E8E8;
+            --text-color: #333333;
+            --primary-accent: #990100;
+            --secondary-accent: #B90504;
+            --error-color: #d32f2f;
+            --success-color: #388e3c;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background-color: var(--primary-accent);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .main-nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .main-nav a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+            transition: color 0.3s;
+            padding: 0.5rem 0;
+            position: relative;
+        }
+
+        .main-nav a:hover {
+            color: var(--primary-accent);
+        }
+
+        .main-nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary-accent);
+            transition: width 0.3s;
+        }
+
+        .main-nav a:hover::after {
+            width: 100%;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-color);
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 4rem 0;
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .page-title h1 {
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-title p {
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Form Styles */
+        .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            padding: 2.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-accent);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(153, 1, 0, 0.1);
+        }
+
+        .form-control.error {
+            border-color: var(--error-color);
+        }
+
+        .error-message {
+            color: var(--error-color);
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        .error-message.visible {
+            display: block;
+        }
+
+        .password-container {
+            position: relative;
+        }
+
+        .toggle-password {
+            position: absolute;
+            top: 50%;
+            right: 12px;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #777;
+            font-size: 0.9rem;
+        }
+
+        .password-strength {
+            margin-top: 0.5rem;
+            height: 5px;
+            background-color: #ddd;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .password-strength-meter {
+            height: 100%;
+            width: 0;
+            transition: width 0.3s, background-color 0.3s;
+        }
+
+        .password-strength-text {
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+            color: #777;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .form-checkbox {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-checkbox input {
+            margin-top: 0.3rem;
+        }
+
+        .form-checkbox label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .form-checkbox a {
+            color: var(--primary-accent);
+            text-decoration: none;
+        }
+
+        .form-checkbox a:hover {
+            text-decoration: underline;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: 500;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            border: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-accent);
+            color: white;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary-accent);
+            transform: translateY(-2px);
+        }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 2rem;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .form-footer a {
+            color: var(--primary-accent);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .form-footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Alert Messages */
+        .alert {
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .alert-success {
+            background-color: rgba(56, 142, 60, 0.1);
+            color: var(--success-color);
+            border: 1px solid rgba(56, 142, 60, 0.2);
+            display: none;
+        }
+
+        .alert-error {
+            background-color: rgba(211, 47, 47, 0.1);
+            color: var(--error-color);
+            border: 1px solid rgba(211, 47, 47, 0.2);
+            display: none;
+        }
+
+        /* Login with Social */
+        .social-login {
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        .social-login-title {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            color: #777;
+        }
+
+        .social-login-title::before,
+        .social-login-title::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background-color: #ddd;
+        }
+
+        .social-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .social-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 0.7rem;
+            border-radius: 4px;
+            background-color: white;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .social-btn:hover {
+            background-color: #f5f5f5;
+            transform: translateY(-2px);
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--text-color);
+            color: white;
+            padding: 3rem 0;
+            margin-top: 4rem;
+        }
+
+        .footer-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer-column h3 {
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+            position: relative;
+        }
+
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            bottom: -0.5rem;
+            left: 0;
+            width: 40px;
+            height: 2px;
+            background-color: var(--secondary-accent);
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-column a {
+            text-decoration: none;
+            color: #bbb;
+            transition: color 0.3s;
+        }
+
+        .footer-column a:hover {
+            color: white;
+        }
+
+        .copyright {
+            margin-top: 2rem;
+            text-align: center;
+            color: #bbb;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Responsive Styles */
+        @media screen and (max-width: 768px) {
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .main-nav {
+                position: fixed;
+                top: 0;
+                right: -300px;
+                width: 300px;
+                height: 100vh;
+                background-color: white;
+                box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+                transition: right 0.3s;
+                z-index: 1000;
+            }
+
+            .main-nav.active {
+                right: 0;
+            }
+
+            .main-nav ul {
+                flex-direction: column;
+                padding: 2rem;
+                gap: 1.5rem;
+            }
+
+            .close-menu {
+                position: absolute;
+                top: 1rem;
+                right: 1rem;
+                background: none;
+                border: none;
+                font-size: 1.5rem;
+                cursor: pointer;
+            }
+
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+
+            .form-container {
+                padding: 2rem 1.5rem;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .main-content {
+                padding: 2rem 0;
+            }
+
+            .page-title h1 {
+                font-size: 1.8rem;
+            }
+
+            .social-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <div class="logo-icon">A</div>
+                <div class="logo-text">API Avisos</div>
+            </div>
+            <nav class="main-nav">
+                <button class="close-menu" id="closeMenu">×</button>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Documentação</a></li>
+                    <li><a href="#">Exemplos</a></li>
+                    <li><a href="#">Preços</a></li>
+                    <li><a href="#">Suporte</a></li>
+                </ul>
+            </nav>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <div class="page-title">
+                <h1>Crie sua conta</h1>
+                <p>Comece a integrar nosso sistema de avisos em sua aplicação em minutos.</p>
+            </div>
+
+            <div class="form-container">
+                <div class="alert alert-success" id="successAlert">
+                    <span>✓</span> Cadastro realizado com sucesso! Você será redirecionado em instantes...
+                </div>
+                <div class="alert alert-error" id="errorAlert">
+                    <span>✗</span> Ocorreu um erro ao processar seu cadastro. Por favor, tente novamente.
+                </div>
+
+                <form id="signupForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="firstName">Nome</label>
+                            <input type="text" class="form-control" id="firstName" name="firstName" placeholder="Seu nome">
+                            <div class="error-message" id="firstNameError">Este campo é obrigatório</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="lastName">Sobrenome</label>
+                            <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Seu sobrenome">
+                            <div class="error-message" id="lastNameError">Este campo é obrigatório</div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="seu.email@exemplo.com">
+                        <div class="error-message" id="emailError">Por favor, insira um email válido</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="company">Empresa</label>
+                        <input type="text" class="form-control" id="company" name="company" placeholder="Nome da sua empresa">
+                        <div class="error-message" id="companyError">Este campo é obrigatório</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Senha</label>
+                        <div class="password-container">
+                            <input type="password" class="form-control" id="password" name="password" placeholder="Crie uma senha forte">
+                            <button type="button" class="toggle-password" id="togglePassword">Mostrar</button>
+                        </div>
+                        <div class="password-strength">
+                            <div class="password-strength-meter" id="passwordStrengthMeter"></div>
+                        </div>
+                        <div class="password-strength-text" id="passwordStrengthText">Força da senha</div>
+                        <div class="error-message" id="passwordError">A senha deve ter pelo menos 8 caracteres</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirmar Senha</label>
+                        <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="Confirme sua senha">
+                        <div class="error-message" id="confirmPasswordError">As senhas não coincidem</div>
+                    </div>
+
+                    <div class="form-checkbox">
+                        <input type="checkbox" id="termsAgree" name="termsAgree">
+                        <label for="termsAgree">
+                            Eu li e concordo com os <a href="#">Termos de Serviço</a> e <a href="#">Política de Privacidade</a>
+                        </label>
+                    </div>
+
+                    <div class="form-checkbox">
+                        <input type="checkbox" id="marketingAgree" name="marketingAgree">
+                        <label for="marketingAgree">
+                            Gostaria de receber novidades e ofertas por email (opcional)
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" id="submitBtn">Criar Conta</button>
+
+                    <div class="form-footer">
+                        Já possui uma conta? <a href="#">Faça login</a>
+                    </div>
+
+                    <div class="social-login">
+                        <div class="social-login-title">Ou cadastre-se com</div>
+                        <div class="social-buttons">
+                            <button type="button" class="social-btn">
+                                Google
+                            </button>
+                            <button type="button" class="social-btn">
+                                GitHub
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-container">
+                <div class="footer-column">
+                    <h3>API Avisos</h3>
+                    <ul>
+                        <li><a href="#">Sobre Nós</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Carreiras</a></li>
+                        <li><a href="#">Contato</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Produto</h3>
+                    <ul>
+                        <li><a href="#">Documentação</a></li>
+                        <li><a href="#">Preços</a></li>
+                        <li><a href="#">Casos de Uso</a></li>
+                        <li><a href="#">Roadmap</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Recursos</h3>
+                    <ul>
+                        <li><a href="#">Guias</a></li>
+                        <li><a href="#">Tutoriais</a></li>
+                        <li><a href="#">SDK</a></li>
+                        <li><a href="#">API Reference</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Legal</h3>
+                    <ul>
+                        <li><a href="#">Termos de Serviço</a></li>
+                        <li><a href="#">Privacidade</a></li>
+                        <li><a href="#">Cookies</a></li>
+                        <li><a href="#">Conformidade</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                &copy; 2025 API Avisos. Todos os direitos reservados.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile Menu Functionality
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const closeMenu = document.getElementById('closeMenu');
+        const mainNav = document.querySelector('.main-nav');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mainNav.classList.add('active');
+        });
+
+        closeMenu.addEventListener('click', () => {
+            mainNav.classList.remove('active');
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!mainNav.contains(e.target) && e.target !== mobileMenuBtn) {
+                mainNav.classList.remove('active');
+            }
+        });
+
+        // Form Validation
+        const form = document.getElementById('signupForm');
+        const firstName = document.getElementById('firstName');
+        const lastName = document.getElementById('lastName');
+        const email = document.getElementById('email');
+        const company = document.getElementById('company');
+        const password = document.getElementById('password');
+        const confirmPassword = document.getElementById('confirmPassword');
+        const termsAgree = document.getElementById('termsAgree');
+        const passwordStrengthMeter = document.getElementById('passwordStrengthMeter');
+        const passwordStrengthText = document.getElementById('passwordStrengthText');
+        const togglePassword = document.getElementById('togglePassword');
+        const successAlert = document.getElementById('successAlert');
+        const errorAlert = document.getElementById('errorAlert');
+
+        // Toggle password visibility
+        togglePassword.addEventListener('click', function() {
+            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+            password.setAttribute('type', type);
+            this.textContent = type === 'password' ? 'Mostrar' : 'Ocultar';
+        });
+
+        // Password strength meter
+        password.addEventListener('input', function() {
+            const val = this.value;
+            let strength = 0;
+            let color = '';
+
+            if (val.length >= 8) strength += 1;
+            if (val.match(/[a-z]/)) strength += 1;
+            if (val.match(/[A-Z]/)) strength += 1;
+            if (val.match(/[0-9]/)) strength += 1;
+            if (val.match(/[^a-zA-Z0-9]/)) strength += 1;
+
+            switch (strength) {
+                case 0:
+                case 1:
+                    color = '#d32f2f';
+                    passwordStrengthText.textContent = 'Fraca';
+                    break;
+                case 2:
+                case 3:
+                    color = '#ff9800';
+                    passwordStrengthText.textContent = 'Média';
+                    break;
+                case 4:
+                case 5:
+                    color = '#388e3c';
+                    passwordStrengthText.textContent = 'Forte';
+                    break;
+            }
+
+            const percent = (strength / 5) * 100;
+            passwordStrengthMeter.style.width = percent + '%';
+            passwordStrengthMeter.style.backgroundColor = color;
+        });
+
+        // Form validation
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            let isValid = true;
+
+            // Reset error states
+            const errorElements = document.querySelectorAll('.error-message');
+            errorElements.forEach(element => {
+                element.classList.remove('visible');
+            });
+
+            const formControls = document.querySelectorAll('.form-control');
+            formControls.forEach(element => {
+                element.classList.remove('error');
+            });
+
+            // Hide alerts
+            successAlert.style.display = 'none';
+            errorAlert.style.display = 'none';
+
+            // Validate first name
+            if (firstName.value.trim() === '') {
+                document.getElementById('firstNameError').classList.add('visible');
+                firstName.classList.add('error');
+                isValid = false;
+            }
+
+            // Validate last name
+            if (lastName.value.trim() === '') {
+                document.getElementById('lastNameError').classList.add('visible');
+                lastName.classList.add('error');
+                isValid = false;
+            }
+
+            // Validate email
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email.value)) {
+                document.getElementById('emailError').classList.add('visible');
+                email.classList.add('error');
+                isValid = false;
+            }
+
+            // Validate company
+            if (company.value.trim() === '') {
+                document.getElementById('companyError').classList.add('visible');
+                company.classList.add('error');
+                isValid = false;
+            }
+
+            // Validate password
+            if (password.value.length < 8) {
+                document.getElementById('passwordError').classList.add('visible');
+                password.classList.add('error');
+                isValid = false;
+            }
+
+            // Validate password confirmation
+            if (password.value !== confirmPassword.value) {
+                document.getElementById('confirmPasswordError').classList.add('visible');
+                confirmPassword.classList.add('error');
+                isValid = false;
+            }
+
+            // Validate terms agreement
+            if (!termsAgree.checked) {
+                alert('Você precisa concordar com os Termos de Serviço e Política de Privacidade');
+                isValid = false;
+            }
+
+            // Form submission
+            if (isValid) {
+                // Here you would typically send the form data to the server
+                console.log('Form is valid, submitting data...');
+                console.log({
+                    firstName: firstName.value,
+                    lastName: lastName.value,
+                    email: email.value,
+                    company: company.value,
+                    password: password.value,
+                    marketing: document.getElementById('marketingAgree').checked
+                });
+
+                // Show success message
+                successAlert.style.display = 'flex';
+                
+                // Reset form
+                form.reset();
+                passwordStrengthMeter.style.width = '0';
+                passwordStrengthText.textContent = 'Força da senha';
+
+                // Simulate redirect after success
+                setTimeout(() => {
+                    // Redirect would go here
+                    // window.location.href = 'dashboard.html';
+                    console.log('Redirecting to dashboard...');
+                }, 3000);
+            } else {
+                // Show error message
+                errorAlert.style.display = 'flex';
+            }
+        });
+    </script>
+</body>
+</html>

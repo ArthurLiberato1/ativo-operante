@@ -14,8 +14,12 @@ public class UsuarioService {
     UsuarioRepository usuRepo;
 
     public List<Usuario> getAllUsuarios(){return usuRepo.findAll();}
+
     public Usuario getUsuarioId(Long id){
         return usuRepo.findById(id).orElse(null);
+    }
+    public Usuario getUsuarioByEmail(String email){
+        return usuRepo.findAllByEmail(email);
     }
     /*public Usuario salvarUsuario(Usuario elemento){
         return usuRepo.save(elemento);

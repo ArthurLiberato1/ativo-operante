@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal do Cidadão - Cadastro de Tipos de Ocorrência</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #F6F6F6 0%, #E8E8E8 100%);
+            min-height: 100vh;
+            color: #333333;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #333333 0%, #990100 100%);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 4px 20px rgba(153, 1, 0, 0.2);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-title h1 {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .header-title .icon {
+            font-size: 32px;
+        }
+
+        .admin-badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-left: 15px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .user-details h3 {
+            font-size: 16px;
+            margin-bottom: 2px;
+        }
+
+        .user-details p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .back-btn, .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-btn:hover, .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        /* Breadcrumb */
+        .breadcrumb {
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .breadcrumb a {
+            color: #B90504;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .breadcrumb a:hover {
+            color: #990100;
+        }
+
+        .breadcrumb-separator {
+            color: #ccc;
+        }
+
+        /* Page Header */
+        .page-header {
+            margin-bottom: 30px;
+        }
+
+        .page-title {
+            font-size: 28px;
+            color: #333333;
+            margin-bottom: 10px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .page-title .icon {
+            font-size: 32px;
+            color: #B90504;
+        }
+
+        .page-subtitle {
+            font-size: 16px;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        /* Form Container */
+        .form-container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(153, 1, 0, 0.1);
+            border: 1px solid #E8E8E8;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-icon {
+            font-size: 48px;
+            color: #B90504;
+            margin-bottom: 15px;
+        }
+
+        .form-title {
+            font-size: 24px;
+            color: #333333;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .form-description {
+            color: #666;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 16px;
+            font-weight: 600;
+            color: #333333;
+            margin-bottom: 8px;
+        }
+
+        .form-label .required {
+            color: #B90504;
+            margin-left: 4px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #E8E8E8;
+            border-radius: 12px;
+            font-size: 16px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #B90504;
+            box-shadow: 0 0 0 3px rgba(185, 5, 4, 0.1);
+        }
+
+        .form-input.error {
+            border-color: #dc3545;
+            box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+        }
+
+        .form-input.success {
+            border-color: #28a745;
+            box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
+        }
+
+        .form-help {
+            font-size: 14px;
+            color: #666;
+            margin-top: 6px;
+            line-height: 1.4;
+        }
+
+        .form-error {
+            font-size: 14px;
+            color: #dc3545;
+            margin-top: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .form-success {
+            font-size: 14px;
+            color: #28a745;
+            margin-top: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Button Styles */
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            min-width: 150px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #B90504 0%, #990100 100%);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(185, 5, 4, 0.3);
+        }
+
+        .btn-primary:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-secondary {
+            background: #E8E8E8;
+            color: #333333;
+        }
+
+        .btn-secondary:hover {
+            background: #ddd;
+            transform: translateY(-2px);
+        }
+
+        /* Loading Spinner */
+        .loading-spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid transparent;
+            border-top: 2px solid currentColor;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Alert Messages */
+        .alert {
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        .alert.show {
+            display: flex;
+            animation: slideIn 0.3s ease;
+        }
+
+        .alert-success {
+            background: #D4EDDA;
+            color: #155724;
+            border: 1px solid #C3E6CB;
+        }
+
+        .alert-error {
+            background: #F8D7DA;
+            color: #721C24;
+            border: 1px solid #F5C6CB;
+        }
+
+        .alert-info {
+            background: #CCE7FF;
+            color: #004085;
+            border: 1px solid #B3D7FF;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* API Info Box */
+        .api-info {
+            background: #E8E8E8;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 30px;
+            border-left: 4px solid #B90504;
+            font-size: 14px;
+        }
+
+        .api-info h4 {
+            color: #333333;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .api-info p {
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .api-info code {
+            background: rgba(185, 5, 4, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: #B90504;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                text-align: center;
+            }
+
+            .header-title h1 {
+                font-size: 20px;
+            }
+
+            .container {
+                padding: 20px 15px;
+            }
+
+            .form-container {
+                padding: 30px 20px;
+            }
+
+            .page-title {
+                font-size: 24px;
+            }
+
+            .form-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="header-title">
+                <span class="icon">🏛️</span>
+                <h1>Portal do Cidadão</h1>
+                <span class="admin-badge">Administrador</span>
+            </div>
+            
+            <div class="user-info">
+                <a href="../admin/home.html" class="back-btn" onclick="goBack()">
+                    <span>← Voltar</span>
+                </a>
+                <div class="user-avatar">👨‍💼</div>
+                <div class="user-details">
+                    <h3>Administrador</h3>
+                    <p>admin@portal.gov.br</p>
+                </div>
+                <button class="logout-btn" onclick="logout()">Sair</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb">
+            <a href="../admin/home.html">Dashboard</a>
+            <span class="breadcrumb-separator">›</span>
+            <a href="#">Tipos de Ocorrência</a>
+            <span class="breadcrumb-separator">›</span>
+            <span>Cadastro</span>
+        </nav>
+
+        <!-- Page Header -->
+        <div class="page-header">
+            <h1 class="page-title">
+                <span class="icon">🏷️</span>
+                Cadastro de Tipos de Ocorrência
+            </h1>
+            <p class="page-subtitle">
+                Cadastre novos tipos de ocorrência no sistema. O identificador será gerado automaticamente.
+            </p>
+        </div>
+
+        <!-- Alert Messages -->
+        <div id="alertSuccess" class="alert alert-success">
+            <span>✅</span>
+            <span id="successMessage"></span>
+        </div>
+
+        <div id="alertError" class="alert alert-error">
+            <span>❌</span>
+            <span id="errorMessage"></span>
+        </div>
+
+        <div id="alertInfo" class="alert alert-info">
+            <span>ℹ️</span>
+            <span id="infoMessage"></span>
+        </div>
+
+        <!-- Form Container -->
+        <div class="form-container">
+            <div class="form-header">
+                <div class="form-icon">🏷️</div>
+                <h2 class="form-title">Novo Tipo de Ocorrência</h2>
+                <p class="form-description">
+                    Preencha as informações abaixo para cadastrar um novo tipo de ocorrência
+                </p>
+            </div>
+
+            <form id="tipoOcorrenciaForm" onsubmit="submitForm(event)">
+                <div class="form-group">
+                    <label for="nomeTipoOcorrencia" class="form-label">
+                        Nome do Tipo de Ocorrência
+                        <span class="required">*</span>
+                    </label>
+                    <input
+                        type="text"
+                        id="nomeTipoOcorrencia"
+                        name="nomeTipoOcorrencia"
+                        class="form-input"
+                        placeholder="Digite o nome do tipo de ocorrência"
+                        required
+                        maxlength="100"
+                        autocomplete="off"
+                    >
+                    <div class="form-help">
+                        Exemplo: Roubo, Furto, Acidente de Trânsito, Violência Doméstica, etc.
+                    </div>
+                    <div id="nomeError" class="form-error" style="display: none;">
+                        <span>⚠️</span>
+                        <span></span>
+                    </div>
+                    <div id="nomeSuccess" class="form-success" style="display: none;">
+                        <span>✅</span>
+                        <span>Nome válido</span>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="clearForm()">
+                        <span>🗑️</span>
+                        Limpar
+                    </button>
+                    <button type="submit" class="btn btn-primary" id="submitBtn">
+                        <span id="submitIcon">💾</span>
+                        <span id="submitText">Cadastrar Tipo</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        
+    </div>
+
+    <script src="cadastro-tipo.js"></script>
+</body>
+</html>

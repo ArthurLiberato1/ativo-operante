@@ -1,4 +1,4 @@
-package unoeste.fipp.ativooperante_be.model.util;
+package unoeste.fipp.ativooperante_be.security.filters;
 
 
 import java.nio.charset.StandardCharsets;
@@ -10,11 +10,11 @@ import javax.crypto.SecretKey;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 
 public class JWTTokenProvider {
-    private static final SecretKey CHAVE = Keys.hmacShaKeyFor(
-            "123321".getBytes(StandardCharsets.UTF_8));
+    private static final SecretKey CHAVE =  Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
     static public String getToken(String usuario,String nivel)
     {
@@ -23,10 +23,11 @@ public class JWTTokenProvider {
                 .setIssuer("localhost:8080")
                 .claim("nivel", nivel)
                 .setIssuedAt(new Date())
-                .setExpiration(Date.from(LocalDateTime.now().plusMinutes(1L)
+                .setExpiration(Date.from(LocalDateTime.now().plusMinutes(30L)
                         .atZone(ZoneId.systemDefault()).toInstant()))
                 .signWith(CHAVE)
                 .compact();
+        System.out.println("JWT TOKEN: "+jwtToken);
         return jwtToken;
     }
 

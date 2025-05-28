@@ -30,9 +30,18 @@ public class OrgaoRestController {
                     new Erro("Nenhum Orgaos cadastrado"));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/buscar-id/{id}")
     public ResponseEntity<Object> getOrgaosId(@PathVariable Long id){
         Orgaos aux = orgaosService.getOrgaoId(id);
+        if(aux!=null)
+            return ResponseEntity.ok(aux);
+
+        return ResponseEntity.badRequest().body(new Erro("Este id nao existe"));
+    }
+
+    @GetMapping("/buscar-nome/{nome}")
+    public ResponseEntity<Object> getOrgaosNome(@PathVariable String nome){
+        Orgaos aux = orgaosService.getOrgaoNome(nome);
         if(aux!=null)
             return ResponseEntity.ok(aux);
 
@@ -67,7 +76,7 @@ public class OrgaoRestController {
     public ResponseEntity<Object> update(@RequestBody Orgaos novo){
 
         try{
-            Orgaos alteradoOrgaos = orgaosService.salvarOrgao(novo);
+            Orgaos alteradoOrgaos = orgaosService.atualizarOrgao(novo);
             return ResponseEntity.ok(alteradoOrgaos);
 
         }catch(Exception e){

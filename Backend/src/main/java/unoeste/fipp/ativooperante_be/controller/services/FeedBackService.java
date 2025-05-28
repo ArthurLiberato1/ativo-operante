@@ -20,11 +20,9 @@ public class FeedBackService {
     public FeedBack atualizarFeedBack(FeedBack novo){
         FeedBack elemento = null;
         try{
-            elemento = feedRepo.findById(novo.getFee_id()).orElse(null);
+            elemento = feedRepo.findById(novo.getId()).orElse(null);
             if(elemento!=null)
             {
-                elemento.setFee_texto(novo.getFee_texto());
-                elemento.setDen_id(novo.getDen_id());
                 feedRepo.save(elemento);
             }
 

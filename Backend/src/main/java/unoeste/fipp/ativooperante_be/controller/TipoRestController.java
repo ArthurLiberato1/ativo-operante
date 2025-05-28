@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 
 import unoeste.fipp.ativooperante_be.controller.services.TipoService;
 import unoeste.fipp.ativooperante_be.model.Erro;
+import unoeste.fipp.ativooperante_be.model.Orgaos;
 import unoeste.fipp.ativooperante_be.model.Tipo;
 
 import java.util.List;
@@ -30,6 +31,15 @@ public class TipoRestController {
     @GetMapping("/{id}")
     public ResponseEntity<Object> getTipoId(@PathVariable Long id){
         Tipo aux = tipoService.getTipoId(id);
+        if(aux!=null)
+            return ResponseEntity.ok(aux);
+
+        return ResponseEntity.badRequest().body(new Erro("Este id nao existe"));
+    }
+
+    @GetMapping("/buscar-nome/{nome}")
+    public ResponseEntity<Object> getTipoNome(@PathVariable String nome){
+        Tipo aux = tipoService.getOrgaoNome(nome);
         if(aux!=null)
             return ResponseEntity.ok(aux);
 

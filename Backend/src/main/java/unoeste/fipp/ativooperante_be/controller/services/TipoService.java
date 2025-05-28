@@ -19,6 +19,7 @@ public class TipoService {
     public Tipo getTipoId(Long id){
         return tipoRepository.findById(id).orElse(null);
     }
+    public Tipo getTipoNome(String nome){ return tipoRepository.findByNome(nome);}
     public Tipo salvarTipo(Tipo tipo){
         return tipoRepository.save(tipo);
     }
@@ -40,7 +41,7 @@ public class TipoService {
         try{
             Tipo elemento = tipoRepository.findById(novo.getId()).orElse(null);
             if(elemento!=null){
-                elemento.setNome(novo.getNome());
+               
                 status = elemento;
                 tipoRepository.save(elemento);
 

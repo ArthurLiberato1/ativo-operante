@@ -7,11 +7,11 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import unoeste.fipp.ativooperante_be.model.Orgaos;
 
+import java.util.List;
+
 public interface OrgaosRepository extends JpaRepository<Orgaos, Long> {
 
-    @Modifying
-    @Transactional
-    @Query(value="INSERT INTO orgaos (org_id, org_nome) VALUES (:org_id, :ord_nome)",nativeQuery = true)
-    public void addOrgao(@Param("org_id") Long id, @Param("org_nome") String nome);
-
+    @Override
+    List<Orgaos> findAllById(Iterable<Long> longs);
+    Orgaos findByNome(String nome);
 }

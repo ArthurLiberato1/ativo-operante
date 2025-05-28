@@ -1,16 +1,10 @@
 package unoeste.fipp.ativooperante_be.model;
 
 import jakarta.persistence.*;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
-import java.util.Collection;
-import java.util.List;
 
 @Entity
 @Table(name="usuario")
-public class Usuario{
+public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "usu_id")
@@ -80,5 +74,4 @@ public class Usuario{
     public void setNivel(Long nivel) {
         this.nivel = nivel;
     }
-
 }

@@ -35,6 +35,7 @@ public class Denuncia {
     @OneToOne(mappedBy = "denuncia")
     private FeedBack feedBack;
 
+
     public Denuncia(){
         this(0L, "","",0,null,null,null,null,null);
     }
@@ -123,6 +124,5 @@ public class Denuncia {
     public void setFeedBack(FeedBack feedBack) {
         this.feedBack = feedBack;
     }
-
 
 }

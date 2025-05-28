@@ -8,6 +8,7 @@ import unoeste.fipp.ativooperante_be.model.Denuncia;
 import unoeste.fipp.ativooperante_be.model.FeedBack;
 import unoeste.fipp.ativooperante_be.model.Usuario;
 import unoeste.fipp.ativooperante_be.model.repositories.DenunciaRepository;
+import unoeste.fipp.ativooperante_be.model.repositories.FeedBackRepository;
 
 import java.util.List;
 
@@ -16,6 +17,10 @@ public class DenunciaService {
 
     @Autowired
     DenunciaRepository denunciaRepository;
+
+    @Autowired
+    FeedBackRepository feedBackRepository;
+
     @Transactional
     public void deleteByUsuario(Usuario usuario) {
         denunciaRepository.deleteByUsuario(usuario);
@@ -33,7 +38,7 @@ public class DenunciaService {
     }
     public boolean addFeedBack(FeedBack feedBack){
         try {
-            denunciaRepository.addFeedBack(feedBack.getFee_id(), feedBack.getFee_texto());
+            denunciaRepository.addFeedBack(feedBack.getId(), feedBack.getTexto());
             return true;
         }
         catch (Exception e){
@@ -46,19 +51,8 @@ public class DenunciaService {
     }
 
 
-    public boolean deleteDenuncia(Denuncia Denuncia){
-        try{
-            Denuncia elemento = denunciaRepository.findById(Denuncia.getId()).orElse(null);
-            if(elemento!=null){
-                denunciaRepository.delete(elemento);
-                return true;
-            }
 
-        }catch(Exception e){
-            return false;
-        }
-        return false;
-    }/*
+
     public boolean deleteByUsuarios(Usuario usuario) {
         try {
             List<Denuncia> denuncias = denunciaRepository.findAllByUsuario(usuario);
@@ -71,7 +65,23 @@ public class DenunciaService {
         } catch (Exception e) {
             return false;
         }
-    }*/
+    }
+
+    public boolean deleteDenuncia(Denuncia denuncia){
+        FeedBack feedBack = denuncia.getFeedBack();
+        if(feedBack!= null && feedBack.getDen_id().getId() == denuncia.getId()){
+            feedBackRepository.delete(feedBack);
+
+        }
+
+        denunciaRepository.delete(denuncia);
+        
+        return true;
+
+    }
+
+
+
     public Denuncia atualizarDenuncia(Denuncia novo){
         Denuncia status = null;
         try{

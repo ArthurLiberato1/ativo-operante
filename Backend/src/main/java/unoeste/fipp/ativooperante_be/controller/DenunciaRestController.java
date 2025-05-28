@@ -18,7 +18,17 @@ public class DenunciaRestController {
     @Autowired
     private DenunciaService denunciaService;
 
-    @GetMapping("/")
+
+    @PostMapping
+    public ResponseEntity<Object> cadastro(@RequestBody Denuncia elemento) {
+        Denuncia aux = denunciaService.salvarDenuncia(elemento);
+        if (aux != null)
+            return ResponseEntity.ok(aux);
+        return ResponseEntity.badRequest().body(new Erro("Erro ao cadastrar Denuncia"));
+    }
+
+
+    @GetMapping("/denuncia")
     public ResponseEntity<Object> getDenuncias(){
         List<Denuncia> DenunciaList;
         DenunciaList = denunciaService.getAll();
@@ -35,16 +45,10 @@ public class DenunciaRestController {
 
         return ResponseEntity.badRequest().body(new Erro("Este id nao existe"));
     }
-    @PostMapping
-    public ResponseEntity<Object> save(@RequestBody Denuncia Denuncia){
-        Denuncia DenunciaAux=denunciaService.salvarDenuncia(Denuncia);
-        if(DenunciaAux!=null)
-            return ResponseEntity.ok(DenunciaAux);
-        return ResponseEntity.badRequest().body(new Erro("Erro ao gravar o Denuncia"));
-    }
 
 
-    @DeleteMapping("{id}")
+
+    @DeleteMapping("/{id}")
     public ResponseEntity<Object> delete(@PathVariable Long id){
         Denuncia aux = denunciaService.getDenunciaId(id);
 
@@ -73,7 +77,7 @@ public class DenunciaRestController {
 
     }
 
-    @GetMapping("add-feedback/{id}/{texto}")
+    @GetMapping("/add-feedback/{id}/{texto}")
     public ResponseEntity<Object> addFeedBack(@PathVariable Long id, @PathVariable String texto) {
         if(denunciaService.addFeedBack(new FeedBack(id,texto)))
             return ResponseEntity.noContent().build();
@@ -81,7 +85,7 @@ public class DenunciaRestController {
             return ResponseEntity.badRequest().body("Não foi possível adicionar o feebback");
     }
 
-    @GetMapping("usuario/{id}")
+    @GetMapping("/usuario/{id}")
     public ResponseEntity<Object> getAllByUsuario(@PathVariable Long id){
         List<Denuncia> denunciaList;
         denunciaList=denunciaService.getAllByUsuario(id);

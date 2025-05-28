@@ -35,6 +35,9 @@ public class OrgaosService {
     public Orgaos getOrgaoId(Long id){
         return orgaoRepo.findById(id).orElse(null);
     }
+    public Orgaos getOrgaoNome(String nome){
+        return orgaoRepo.findByNome(nome);
+    }
 
     public boolean apagarOrgao(Orgaos elemento){
         Orgaos orgao = orgaoRepo.findById(elemento.getOrg_id()).orElse(null);
@@ -51,11 +54,14 @@ public class OrgaosService {
         return false;
     }
 
+
+
+
     public Orgaos atualizarOrgao(Orgaos novo){
         try{
             Orgaos elemento = orgaoRepo.findById(novo.getOrg_id()).orElse(null);
             if(elemento!=null){
-                elemento.setOrg_nome(novo.getOrg_nome());
+                //elemento.setOrg_nome(novo.getOrg_nome());
                 return orgaoRepo.save(elemento);
             }
 
@@ -64,4 +70,6 @@ public class OrgaosService {
         }
         return null;
     }
+
+
 }

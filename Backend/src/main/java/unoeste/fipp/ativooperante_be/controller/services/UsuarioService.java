@@ -21,11 +21,11 @@ public class UsuarioService {
         return usuRepo.save(elemento);
     }*/
 
-    public String autenticar(String Email, Long senha){
-        String token=null;
-        Usuario usuario = usuRepo.findAllByEmail(Email);
-        if(usuario!=null && usuario.getSenha()==senha){
-            token= JWTTokenProvider.getToken(Email,""+usuario.getNivel());
+    public String autenticar(String email, Long senha) {
+        String token = null;
+        Usuario usuario = usuRepo.findAllByEmail(email);
+        if (usuario != null && usuario.getSenha().equals(senha)) {
+            token = JWTTokenProvider.getToken(email, usuario.getNivel().toString());
         }
         return token;
     }

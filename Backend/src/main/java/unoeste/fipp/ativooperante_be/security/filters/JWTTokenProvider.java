@@ -14,7 +14,9 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 
 public class JWTTokenProvider {
-    private static final SecretKey CHAVE =  Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    private static final SecretKey CHAVE = Keys.hmacShaKeyFor(
+            "AbCdEfGhIjKlMnOpQrStUvWxYz123456".getBytes(StandardCharsets.UTF_8)
+    );
 
     static public String getToken(String usuario,String nivel)
     {

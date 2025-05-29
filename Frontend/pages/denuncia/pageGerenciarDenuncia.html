@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal do Cidadão - Gerenciamento de Denúncias</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #F6F6F6 0%, #E8E8E8 100%);
+            min-height: 100vh;
+            color: #333333;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #333333 0%, #990100 100%);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 4px 20px rgba(153, 1, 0, 0.2);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-title h1 {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .header-title .icon {
+            font-size: 32px;
+        }
+
+        .admin-badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-left: 15px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .user-details h3 {
+            font-size: 16px;
+            margin-bottom: 2px;
+        }
+
+        .user-details p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .back-btn, .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-btn:hover, .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        /* Breadcrumb */
+        .breadcrumb {
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .breadcrumb a {
+            color: #B90504;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .breadcrumb a:hover {
+            color: #990100;
+        }
+
+        .breadcrumb-separator {
+            color: #ccc;
+        }
+
+        /* Page Header */
+        .page-header {
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .page-info {
+            flex: 1;
+        }
+
+        .page-title {
+            font-size: 28px;
+            color: #333333;
+            margin-bottom: 10px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .page-title .icon {
+            font-size: 32px;
+            color: #B90504;
+        }
+
+        .page-subtitle {
+            font-size: 16px;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        /* Search Container */
+        .search-container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(153, 1, 0, 0.1);
+            border: 1px solid #E8E8E8;
+            margin-bottom: 30px;
+        }
+
+        .search-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            gap: 12px;
+        }
+
+        .search-icon {
+            font-size: 24px;
+            color: #B90504;
+        }
+
+        .search-title {
+            font-size: 20px;
+            color: #333333;
+            font-weight: 600;
+        }
+
+        .search-form {
+            display: flex;
+            gap: 15px;
+            align-items: flex-end;
+            flex-wrap: wrap;
+        }
+
+        .search-group {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .search-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #333333;
+            margin-bottom: 8px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #E8E8E8;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #B90504;
+            box-shadow: 0 0 0 3px rgba(185, 5, 4, 0.1);
+        }
+
+        .search-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        /* Button Styles */
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #B90504 0%, #990100 100%);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(185, 5, 4, 0.3);
+        }
+
+        .btn-secondary {
+            background: #E8E8E8;
+            color: #333333;
+        }
+
+        .btn-secondary:hover {
+            background: #ddd;
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            color: #999;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 12px;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white;
+        }
+
+        .btn-danger:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(220, 53, 69, 0.3);
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+            color: white;
+        }
+
+        .btn-info:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(23, 162, 184, 0.3);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
+            color: #212529;
+        }
+
+        .btn-warning:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 193, 7, 0.3);
+        }
+
+        /* Loading Spinner */
+        .loading-spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid transparent;
+            border-top: 2px solid currentColor;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Alert Messages */
+        .alert {
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        .alert.show {
+            display: flex;
+            animation: slideIn 0.3s ease;
+        }
+
+        .alert-success {
+            background: #D4EDDA;
+            color: #155724;
+            border: 1px solid #C3E6CB;
+        }
+
+        .alert-error {
+            background: #F8D7DA;
+            color: #721C24;
+            border: 1px solid #F5C6CB;
+        }
+
+        .alert-info {
+            background: #CCE7FF;
+            color: #004085;
+            border: 1px solid #B3D7FF;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Results Container */
+        .results-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(153, 1, 0, 0.1);
+            border: 1px solid #E8E8E8;
+            overflow: hidden;
+        }
+
+        .results-header {
+            padding: 25px 30px;
+            border-bottom: 1px solid #E8E8E8;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .results-title {
+            font-size: 20px;
+            color: #333333;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .results-count {
+            background: rgba(185, 5, 4, 0.1);
+            color: #B90504;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        /* Table Styles */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table th,
+        .table td {
+            padding: 15px 20px;
+            text-align: left;
+            border-bottom: 1px solid #E8E8E8;
+        }
+
+        .table th {
+            background: #F8F9FA;
+            font-weight: 600;
+            color: #333333;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .table td {
+            font-size: 15px;
+            color: #666;
+            vertical-align: top;
+        }
+
+        .table tbody tr:hover {
+            background: rgba(185, 5, 4, 0.02);
+        }
+
+        .table .id-column {
+            width: 80px;
+            font-weight: 600;
+            color: #B90504;
+        }
+
+        .table .title-column {
+            font-weight: 500;
+            color: #333333;
+            max-width: 200px;
+        }
+
+        .table .description-column {
+            max-width: 250px;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        .table .status-column {
+            width: 120px;
+        }
+
+        .table .date-column {
+            width: 140px;
+            font-size: 14px;
+        }
+
+        .table .actions-column {
+            width: 180px;
+            text-align: center;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            width: 32px;
+            height: 32px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .view-btn {
+            background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+            color: white;
+        }
+
+        .view-btn:hover {
+            box-shadow: 0 4px 12px rgba(23, 162, 184, 0.4);
+        }
+
+        .feedback-btn {
+            background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
+            color: #212529;
+        }
+
+        .feedback-btn:hover {
+            box-shadow: 0 4px 12px rgba(255, 193, 7, 0.4);
+        }
+
+        .delete-btn {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white;
+        }
+
+        .delete-btn:hover {
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+        }
+
+        /* Status Badge */
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-pendente {
+            background: #FFF3CD;
+            color: #856404;
+        }
+
+        .status-andamento {
+            background: #D1ECF1;
+            color: #0C5460;
+        }
+
+        .status-resolvida {
+            background: #D4EDDA;
+            color: #155724;
+        }
+
+        .status-rejeitada {
+            background: #F8D7DA;
+            color: #721C24;
+        }
+
+        /* Truncate text */
+        .truncate {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Loading State */
+        .loading-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        .loading-state .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #E8E8E8;
+            border-top: 4px solid #B90504;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        .empty-state .icon {
+            font-size: 64px;
+            color: #E8E8E8;
+            margin-bottom: 20px;
+        }
+
+        .empty-state h3 {
+            color: #333333;
+            margin-bottom: 10px;
+            font-size: 20px;
+        }
+
+        .empty-state p {
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            animation: modalSlide 0.3s ease;
+        }
+
+        @keyframes modalSlide {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            color: #333333;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        /* Feedback Form */
+        .feedback-form {
+            margin-top: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 16px;
+            font-weight: 600;
+            color: #333333;
+            margin-bottom: 8px;
+        }
+
+        .form-textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 15px;
+            border: 2px solid #E8E8E8;
+            border-radius: 10px;
+            font-size: 16px;
+            font-family: inherit;
+            resize: vertical;
+            transition: all 0.3s ease;
+        }
+
+        .form-textarea:focus {
+            outline: none;
+            border-color: #B90504;
+            box-shadow: 0 0 0 3px rgba(185, 5, 4, 0.1);
+        }
+
+        .form-help {
+            font-size: 14px;
+            color: #666;
+            margin-top: 6px;
+        }
+
+        /* Details Display */
+        .detail-item {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #E8E8E8;
+        }
+
+        .detail-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: #333333;
+            margin-bottom: 5px;
+        }
+
+        .detail-value {
+            color: #666;
+            line-height: 1.4;
+        }
+
+        /* API Info */
+        .api-info {
+            background: #E8E8E8;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 30px;
+            border-left: 4px solid #B90504;
+            font-size: 14px;
+        }
+
+        .api-info h4 {
+            color: #333333;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .api-info p {
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .api-info code {
+            background: rgba(185, 5, 4, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: #B90504;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                text-align: center;
+            }
+
+            .header-title h1 {
+                font-size: 20px;
+            }
+
+            .container {
+                padding: 20px 15px;
+            }
+
+            .search-container {
+                padding: 20px 15px;
+            }
+
+            .search-form {
+                flex-direction: column;
+            }
+
+            .search-group {
+                min-width: 100%;
+            }
+
+            .search-actions {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .page-title {
+                font-size: 24px;
+            }
+
+            .results-header {
+                padding: 20px 15px;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .table th,
+            .table td {
+                padding: 12px 10px;
+            }
+
+            .table {
+                font-size: 14px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                gap: 4px;
+            }
+
+            .modal {
+                margin: 20px;
+                width: calc(100% - 40px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="header-title">
+                <span class="icon">🏛️</span>
+                <h1>Portal do Cidadão</h1>
+                <span class="admin-badge">Administrador</span>
+            </div>
+            
+            <div class="user-info">
+                <a href="../admin/home.html" class="back-btn" onclick="goBack()">
+                    <span>← Voltar</span>
+                </a>
+                <div class="user-avatar">👨‍💼</div>
+                <div class="user-details">
+                    <h3>Administrador</h3>
+                    <p>admin@portal.gov.br</p>
+                </div>
+                <button class="logout-btn" onclick="logout()">Sair</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb">
+            <a href="../admin/home.html">Dashboard</a>
+            <span class="breadcrumb-separator">›</span>
+            <a href="#">Denúncias</a>
+            <span class="breadcrumb-separator">›</span>
+            <span>Gerenciamento</span>
+        </nav>
+
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="page-info">
+                <h1 class="page-title">
+                    <span class="icon">📢</span>
+                    Gerenciamento de Denúncias
+                </h1>
+                <p class="page-subtitle">
+                    Consulte, gerencie e responda às denúncias registradas no sistema.
+                </p>
+            </div>
+        </div>
+
+        <!-- Alert Messages -->
+        <div id="alertSuccess" class="alert alert-success">
+            <span>✅</span>
+            <span id="successMessage"></span>
+        </div>
+
+        <div id="alertError" class="alert alert-error">
+            <span>❌</span>
+            <span id="errorMessage"></span>
+        </div>
+
+        <div id="alertInfo" class="alert alert-info">
+            <span>ℹ️</span>
+            <span id="infoMessage"></span>
+        </div>
+
+        <!-- Search Container -->
+        <div class="search-container">
+            <div class="search-header">
+                <span class="search-icon">🔍</span>
+                <h3 class="search-title">Pesquisar Denúncias</h3>
+            </div>
+            
+            <form class="search-form" onsubmit="searchDenuncias(event)">
+                <div class="search-group">
+                    <label for="searchTerm" class="search-label">Buscar por título, descrição ou ID</label>
+                    <input 
+                        type="text" 
+                        id="searchTerm" 
+                        class="search-input" 
+                        placeholder="Digite o termo de busca..."
+                        maxlength="200"
+                    >
+                </div>
+                
+                <div class="search-actions">
+                    <button type="submit" class="btn btn-primary" id="searchBtn">
+                        <span id="searchIcon">🔍</span>
+                        <span id="searchText">Pesquisar</span>
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="loadAllDenuncias()" id="loadAllBtn">
+                        <span id="loadAllIcon">📋</span>
+                        <span id="loadAllText">Listar Todas</span>
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="clearSearch()">
+                        <span>🗑️</span>
+                        Limpar
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Results Container -->
+        <div class="results-container">
+            <div class="results-header">
+                <h3 class="results-title">
+                    <span>📊</span>
+                    Resultados
+                </h3>
+                <span class="results-count" id="resultsCount">0 denúncias encontradas</span>
+            </div>
+
+            <!-- Loading State -->
+            <div id="loadingState" class="loading-state">
+                <div class="spinner"></div>
+                <p>Carregando denúncias...</p>
+            </div>
+
+            <!-- Empty State -->
+            <div id="emptyState" class="empty-state" style="display: none;">
+                <div class="icon">📢</div>
+                <h3>Nenhuma denúncia encontrada</h3>
+                <p>Não foram encontradas denúncias com os critérios de busca especificados.</p>
+            </div>
+
+            <!-- Table Container -->
+            <div id="tableContainer" class="table-container" style="display: none;">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th class="id-column">ID</th>
+                            <th class="title-column">Título</th>
+                            <th class="description-column">Descrição</th>
+                            <th class="status-column">Status</th>
+                            <th class="date-column">Data</th>
+                            <th class="actions-column">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="denunciasTableBody">
+                        <!-- As denúncias serão carregadas aqui via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- API Info -->
+        <div class="api-info">
+            <h4>🔗 Informações da API</h4>
+            <p><strong>Listar Todas:</strong> <code>GET /apis/denuncia</code></p>
+            <p><strong>Buscar:</strong> <code>GET /apis/denuncia/buscar?termo=...</code></p>
+            <p><strong>Detalhes:</strong> <code>GET /apis/denuncia/{id}</code></p>
+            <p><strong>Adicionar Feedback:</strong> <code>POST /apis/denuncia/{id}/feedback</code></p>
+            <p><strong>Excluir:</strong> <code>DELETE /apis/denuncia/{id}</code></p>
+            <p><strong>Servidor:</strong> <code>http://localhost:8080</code></p>
+        </div>
+    </div>
+
+    <!-- View Details Modal -->
+    <div class="modal-overlay" id="viewModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-icon" style="color: #17a2b8;">👁️</div>
+                <h3 class="modal-title">Detalhes da Denúncia</h3>
+            </div>
+            <div id="viewContent">
+                <!-- Conteúdo será carregado via JavaScript -->
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeViewModal()">
+                    <span>❌</span>
+                    Fechar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feedback Modal -->
+    <div class="modal-overlay" id="feedbackModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-icon" style="color: #ffc107;">💬</div>
+                <h3 class="modal-title">Adicionar Feedback</h3>
+            </div>
+            <div id="feedbackContent">
+                <form id="feedbackForm" onsubmit="submitFeedback(event)">
+                    <div class="form-group">
+                        <label for="feedbackText" class="form-label">Feedback/Resposta:</label>
+                        <textarea 
+                            id="feedbackText" 
+                            class="form-textarea" 
+                            placeholder="Digite o feedback para a denúncia..."
+                            required
+                            maxlength="1000"
+                        ></textarea>
+                        <div class="form-help">Máximo 1000 caracteres. Este feedback será visível para o cidadão.</div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeFeedbackModal()">
+                    <span>❌</span>
+                    Cancelar
+                </button>
+                <button class="btn btn-warning" onclick="submitFeedback(event)" id="feedbackSubmitBtn">
+                    <span id="feedbackIcon">💾</span>
+                    <span id="feedbackText">Enviar Feedback</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-icon" style="color: #dc3545;">🗑️</div>
+                <h3 class="modal-title">Confirmar Exclusão</h3>
+            </div>
+            <div id="deleteMessage">
+                Tem certeza que deseja excluir esta denúncia? Esta ação não pode ser desfeita.
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeDeleteModal()">
+                    <span>❌</span>
+                    Cancelar
+                </button>
+                <button class="btn btn-danger" onclick="confirmDelete()" id="confirmDeleteBtn">
+                    <span id="deleteIcon">🗑️</span>
+                    <span id="deleteText">Excluir</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="gerenciar-denuncias.js"></script>
+</body>
+</html>

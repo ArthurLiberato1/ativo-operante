@@ -10,12 +10,15 @@ import unoeste.fipp.ativooperante_be.model.Erro;
 @RestController
 @RequestMapping("/login")
 public class AcessoRestController {
-    //@Autowired
-    UsuarioService usuarioService;
 
-    @GetMapping("/autenticar/{nome}/{senha}")
-    public ResponseEntity<Object> autenticar(@PathVariable String nome, @PathVariable Long senha){
-        String token=usuarioService.autenticar(nome, senha);
+    private UsuarioService usuarioService;
+    public AcessoRestController(UsuarioService usuarioService){
+        this.usuarioService = usuarioService;
+    }
+
+    @GetMapping("/autenticar/{email}/{senha}")
+    public ResponseEntity<Object> autenticar(@PathVariable String email, @PathVariable Long senha){
+        String token=usuarioService.autenticar(email, senha);
         if(token!=null)
             return ResponseEntity.ok(token);
         else

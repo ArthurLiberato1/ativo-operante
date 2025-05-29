@@ -19,7 +19,7 @@ public class OrgaoRestController {
     private OrgaosService orgaosService;
 
 
-    @GetMapping
+    @GetMapping("/listar")
     public ResponseEntity<Object> getOrgaos(){
         List<Orgaos> OrgaosList;
         OrgaosList=orgaosService.getAllOrgaos();

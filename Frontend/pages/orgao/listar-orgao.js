@@ -1,9 +1,9 @@
  // Configurações da API
         const API_BASE_URL = 'http://localhost:8080';
         const API_ENDPOINTS = {
-            listAll: '/apis/orgao',
-            search: '/apis/orgao/buscar-nome',
-            delete: '/apis/orgao'
+            listAll: '/apis/orgaos/listar',
+            search: '/apis/orgaos/buscar-nome',
+            delete: '/apis/orgaos'
         };
 
         // Variáveis globais

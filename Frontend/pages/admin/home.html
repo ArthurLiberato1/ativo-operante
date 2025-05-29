@@ -457,7 +457,7 @@
                 
                 <!-- Dashboard -->
                 <div class="sidebar-section">
-                    <a href="#" class="nav-link active" onclick="setActiveNav(this)">
+                    <a href="../admin/home.html" class="nav-link active" onclick="setActiveNav(this)">
                         <div style="display: flex; align-items: center;">
                             <span class="nav-icon">📊</span>
                             <span class="nav-text">Dashboard</span>
@@ -476,11 +476,11 @@
                             <span class="dropdown-arrow">▼</span>
                         </button>
                         <div class="dropdown-menu">
-                            <a href="#" class="dropdown-item" onclick="navigateTo('orgaos-cadastro')">
+                            <a href="../orgao/pageCadastroOrgao.html" class="dropdown-item" onclick="navigateTo('orgaos-cadastro')">
                                 <span class="icon">➕</span>
                                 Cadastro
                             </a>
-                            <a href="#" class="dropdown-item" onclick="navigateTo('orgaos-listagem')">
+                            <a href="../orgao/pageListarOrgao.html" class="dropdown-item" onclick="navigateTo('orgaos-listagem')">
                                 <span class="icon">📋</span>
                                 Listagem
                             </a>
@@ -499,11 +499,11 @@
                             <span class="dropdown-arrow">▼</span>
                         </button>
                         <div class="dropdown-menu">
-                            <a href="#" class="dropdown-item" onclick="navigateTo('tipos-cadastro')">
+                            <a href="../tipo/pageCadastroTipo.html" class="dropdown-item" onclick="navigateTo('tipos-cadastro')">
                                 <span class="icon">➕</span>
                                 Cadastro
                             </a>
-                            <a href="#" class="dropdown-item" onclick="navigateTo('tipos-listagem')">
+                            <a href="../tipo/pageListarTipo.html" class="dropdown-item" onclick="navigateTo('tipos-listagem')">
                                 <span class="icon">📋</span>
                                 Listagem
                             </a>
@@ -522,14 +522,11 @@
                             <span class="dropdown-arrow">▼</span>
                         </button>
                         <div class="dropdown-menu">
-                            <a href="#" class="dropdown-item" onclick="navigateTo('denuncias-cadastro')">
-                                <span class="icon">➕</span>
-                                Cadastro
-                            </a>
-                            <a href="#" class="dropdown-item" onclick="navigateTo('denuncias-listagem')">
+                            <a href="../denuncia/pageGerenciarDenuncia.html" class="dropdown-item" onclick="navigateTo('denuncias-cadastro')">
                                 <span class="icon">📋</span>
-                                Listagem
+                                Gerenciar
                             </a>
+                            
                         </div>
                     </div>
                 </div>
@@ -673,7 +670,7 @@
                 'denuncias-listagem': 'Listagem de Denúncias'
             };
             
-            alert('Navegando para: ' + pageNames[page]);
+            //alert('Navegando para: ' + pageNames[page]);
             
             // Close sidebar on mobile after navigation
             if (window.innerWidth <= 768) {

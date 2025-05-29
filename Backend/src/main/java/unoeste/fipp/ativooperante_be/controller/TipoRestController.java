@@ -28,7 +28,7 @@ public class TipoRestController {
                     new Erro("Nenhum tipo cadastrado"));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/buscar-id/{id}")
     public ResponseEntity<Object> getTipoId(@PathVariable Long id){
         Tipo aux = tipoService.getTipoId(id);
         if(aux!=null)
@@ -39,7 +39,7 @@ public class TipoRestController {
 
     @GetMapping("/buscar-nome/{nome}")
     public ResponseEntity<Object> getTipoNome(@PathVariable String nome){
-        Tipo aux = tipoService.getOrgaoNome(nome);
+        Tipo aux = tipoService.getTipoNome(nome);
         if(aux!=null)
             return ResponseEntity.ok(aux);
 
@@ -54,7 +54,7 @@ public class TipoRestController {
     }
 
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Object> delete(@PathVariable Long id){
         Tipo aux = tipoService.getTipoId(id);
 

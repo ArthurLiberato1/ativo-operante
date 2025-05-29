@@ -1,5 +1,6 @@
 package unoeste.fipp.ativooperante_be.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -33,6 +34,7 @@ public class Denuncia {
     private Usuario usuario;
 
     @OneToOne(mappedBy = "denuncia")
+    @JsonIgnore
     private FeedBack feedBack;
 
 

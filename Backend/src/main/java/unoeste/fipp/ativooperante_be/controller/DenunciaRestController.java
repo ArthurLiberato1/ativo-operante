@@ -28,7 +28,7 @@ public class DenunciaRestController {
     }
 
 
-    @GetMapping("/denuncia")
+    @GetMapping()
     public ResponseEntity<Object> getDenuncias(){
         List<Denuncia> DenunciaList;
         DenunciaList = denunciaService.getAll();

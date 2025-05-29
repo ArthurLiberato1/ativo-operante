@@ -2,10 +2,9 @@ package unoeste.fipp.ativooperante_be.controller.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import unoeste.fipp.ativooperante_be.model.Denuncia;
 import unoeste.fipp.ativooperante_be.model.Usuario;
 import unoeste.fipp.ativooperante_be.model.repositories.UsuarioRepository;
-import unoeste.fipp.ativooperante_be.model.util.JWTTokenProvider;
+import unoeste.fipp.ativooperante_be.security.filters.JWTTokenProvider;
 
 import java.util.List;
 

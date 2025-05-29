@@ -1,5 +1,6 @@
 package unoeste.fipp.ativooperante_be.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,7 +11,7 @@ import unoeste.fipp.ativooperante_be.model.Erro;
 @RestController
 @RequestMapping("/login")
 public class AcessoRestController {
-    //@Autowired
+    @Autowired
     UsuarioService usuarioService;
 
     @GetMapping("/autenticar/{nome}/{senha}")

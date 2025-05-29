@@ -204,7 +204,7 @@ async function submitForm(event) {
     try {
         // Preparar dados
         const data = {
-            nomeTipoOcorrencia: nomeTipoOcorrencia
+            nome: nomeTipoOcorrencia
         };
 
         console.log('Atualizando tipo ID:', currentTipoId);

@@ -22,32 +22,32 @@ public class AcessoRestController {
 
     @PostMapping("/autenticar/{login}/{senha}")
     public ResponseEntity<Object> autenticar(@PathVariable String login, @PathVariable Long senha){
+        String token = "";
 
-        String token="";
-        if (login.equals("admin@pm.br") && senha == 123321)
-        {
-            token = JWTTokenProvider.getToken(login, "ADM");
+        if (login.equals("admin@pm.br") && senha == 123321) {
+            token = JWTTokenProvider.getToken(login, "1"); // ✅ Nível como string "1"
+            System.out.println("Login admin bem-sucedido para: " + login);
             return new ResponseEntity<>(token, HttpStatus.OK);
-        }
-        else{
-            token=usuarioService.autenticar(login, senha);
-            if(token!=null)
+        } else {
+            token = usuarioService.autenticar(login, senha);
+            if (token != null) {
+                System.out.println("Login usuário bem-sucedido para: " + login);
                 return ResponseEntity.ok(token);
-            else
+            } else {
+                System.out.println("Login falhou para: " + login);
                 return ResponseEntity.badRequest().body(new Erro("Usuário não cadastrado"));
-
+            }
         }
-        //return new ResponseEntity<>("ACESSO NAO PERMITIDO",HttpStatus.NOT_ACCEPTABLE);
     }
-
     @PostMapping("/acesso")
-    public ResponseEntity <Object> acesso(){
+    public ResponseEntity<Object> acesso(){
         String token = request.getHeader("Authorization");
+        System.out.println("Token recebido para verificação: " + token); // ✅ DEBUG
+
         if(JWTTokenProvider.verifyToken(token)){
-            return new ResponseEntity<>("Requisição atendida",HttpStatus.OK);
+            return new ResponseEntity<>("Requisição atendida", HttpStatus.OK);
         }
         return new ResponseEntity<>("Problemas com o token", HttpStatus.NON_AUTHORITATIVE_INFORMATION);
-
     }
 
 }

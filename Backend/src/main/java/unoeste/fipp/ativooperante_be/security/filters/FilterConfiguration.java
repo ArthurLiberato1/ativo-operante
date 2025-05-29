@@ -10,14 +10,22 @@ import org.springframework.web.filter.CorsFilter;
 public class FilterConfiguration {
 
     // CORS
+
     @Bean
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        CorsConfiguration config = new CorsConfiguration().applyPermitDefaultValues();
-        config.addAllowedMethod("PATCH");
-        config.addAllowedMethod("DELETE");
-        config.addAllowedMethod("POST");
-        config.addAllowedMethod("GET");
+        CorsConfiguration config = new CorsConfiguration();
+
+        // ✅ CONFIGURAÇÕES MAIS PERMISSIVAS PARA DEBUG
+        config.setAllowCredentials(true);
+        config.addAllowedOriginPattern("*"); // ou especifique: "http://localhost:3000", "http://127.0.0.1:5500"
+        config.addAllowedHeader("*");
+        config.addAllowedMethod("*");
+
+        // ✅ HEADERS ESPECÍFICOS PARA JWT
+        config.addExposedHeader("Authorization");
+        config.addExposedHeader("Content-Type");
+
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
     }

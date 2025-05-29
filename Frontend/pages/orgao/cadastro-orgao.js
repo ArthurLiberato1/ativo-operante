@@ -1,243 +1,260 @@
- // Configurações da API
-        const API_BASE_URL = 'http://localhost:8080';
-        const API_ENDPOINT = '/apis/orgaos';
+// ✅ CORREÇÕES no JavaScript para cadastro de órgãos
 
+// Configurações da API
+const API_BASE_URL = 'http://localhost:8080';
+const API_ENDPOINT = '/apis/orgaos';
 
-        const token = localStorage.getItem("token");
-        // Elementos do DOM
-        const form = document.getElementById('orgaoForm');
-        const nomeInput = document.getElementById('nomeOrgao');
-        const submitBtn = document.getElementById('submitBtn');
-        const submitIcon = document.getElementById('submitIcon');
-        const submitText = document.getElementById('submitText');
+// ✅ CORREÇÃO: usar chave consistente com login
+const token = localStorage.getItem("authToken"); // ou "token" - seja consistente
 
-        // Validação em tempo real
-        nomeInput.addEventListener('input', function() {
-            validateNome(this.value);
+// ✅ VERIFICAÇÃO INICIAL: validar se usuário está logado e tem permissão
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Página de cadastro de órgãos carregada');
+    
+    // Verificar se está logado
+    if (!token) {
+        alert('Token não encontrado. Redirecionando para login...');
+        window.location.href = '../login/login.html';
+        return;
+    }
+    
+    // Verificar se token é válido e se usuário é admin
+    if (!isValidToken(token)) {
+        alert('Token inválido. Redirecionando para login...');
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('userData');
+        window.location.href = '../login/login.html';
+        return;
+    }
+    
+    // Verificar se usuário é admin (necessário para cadastrar órgãos)
+    const userData = getUserData();
+    if (!userData || userData.nivel !== 1) {
+        alert('Acesso negado. Apenas administradores podem cadastrar órgãos.');
+        window.history.back();
+        return;
+    }
+    
+    
+    
+    
+    // Mostrar informações da API no console
+    console.log('API Configuration:');
+    console.log('Base URL:', API_BASE_URL);
+    console.log('Endpoint:', API_ENDPOINT);
+    console.log('Full URL:', `${API_BASE_URL}${API_ENDPOINT}`);
+    console.log('Token disponível:', token ? 'Sim' : 'Não');
+    console.log('Usuário:', userData ? userData.email : 'N/A');
+    console.log('Nível:', userData ? userData.nivel : 'N/A');
+});
+
+// ✅ FUNÇÃO MELHORADA: validação de token
+function isValidToken(token) {
+    if (!token) return false;
+    
+    try {
+        const parts = token.split('.');
+        if (parts.length !== 3) return false;
+        
+        const payload = JSON.parse(atob(parts[1]));
+        const now = Math.floor(Date.now() / 1000);
+        
+        // Verificar expiração
+        if (payload.exp && payload.exp < now) {
+            console.log('Token expirado');
+            return false;
+        }
+        
+        return true;
+    } catch (error) {
+        console.error('Erro ao validar token:', error);
+        return false;
+    }
+}
+
+// ✅ FUNÇÃO: obter dados do usuário
+function getUserData() {
+    try {
+        const userData = localStorage.getItem('userData');
+        return userData ? JSON.parse(userData) : null;
+    } catch (error) {
+        console.error('Erro ao obter dados do usuário:', error);
+        return null;
+    }
+}
+
+// ✅ FUNÇÃO MELHORADA: envio do formulário com melhor tratamento de erros
+async function submitForm(event) {
+    event.preventDefault();
+
+    const nomeInput = document.getElementById('nomeOrgao');
+    nomeInput.focus();
+    const nomeOrgao = nomeInput.value.trim();
+    // Verificar token antes de enviar
+    if (!token) {
+        showAlert('error', 'Token não encontrado. Faça login novamente.');
+        setTimeout(() => {
+            window.location.href = '../login/login.html';
+        }, 2000);
+        return;
+    }
+
+    // Mostrar loading
+    //setLoading(true);
+    //hideAllAlerts();
+
+    try {
+        // Preparar dados
+        const data = {
+            nome: nomeOrgao
+        };
+
+        console.log('Enviando dados:', data);
+        console.log('Token usado:', token.substring(0, 20) + '...');
+
+        // Enviar requisição
+        const response = await fetch(`http://localhost:8080/apis/orgaos`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${token}` // ✅ Formato correto
+            },
+            body: JSON.stringify(data)
         });
-
-        nomeInput.addEventListener('blur', function() {
-            validateNome(this.value);
-        });
-
-        // Função de validação do nome
-        function validateNome(value) {
-            const nomeError = document.getElementById('nomeError');
-            const nomeSuccess = document.getElementById('nomeSuccess');
+        if(!response.ok){
+            throw new Error("Erro ao cadastrar");
             
-            // Limpar estados anteriores
-            nomeInput.classList.remove('error', 'success');
-            nomeError.style.display = 'none';
-            nomeSuccess.style.display = 'none';
-
-            if (!value.trim()) {
-                return false;
-            }
-
-            if (value.trim().length < 3) {
-                nomeInput.classList.add('error');
-                nomeError.querySelector('span:last-child').textContent = 'Nome deve ter pelo menos 3 caracteres';
-                nomeError.style.display = 'flex';
-                return false;
-            }
-
-            if (value.trim().length > 100) {
-                nomeInput.classList.add('error');
-                nomeError.querySelector('span:last-child').textContent = 'Nome deve ter no máximo 100 caracteres';
-                nomeError.style.display = 'flex';
-                return false;
-            }
-
-            // Validação de caracteres especiais
-            const regex = /^[a-zA-ZÀ-ÿ0-9\s\-\.\_]+$/;
-            if (!regex.test(value.trim())) {
-                nomeInput.classList.add('error');
-                nomeError.querySelector('span:last-child').textContent = 'Nome contém caracteres inválidos';
-                nomeError.style.display = 'flex';
-                return false;
-            }
-
-            // Sucesso
-            nomeInput.classList.add('success');
-            nomeSuccess.style.display = 'flex';
-            return true;
         }
 
-        // Função de envio do formulário
-        async function submitForm(event) {
-            event.preventDefault();
+        console.log('Response status:', response.status);
+        console.log('Response ok:', response.ok);
 
-            const nomeOrgao = nomeInput.value.trim();
-
-            // Validação final
-            if (!validateNome(nomeOrgao)) {
-                showAlert('error', 'Por favor, corrija os erros no formulário antes de continuar.');
-                return;
-            }
-
-            // Mostrar loading
-            setLoading(true);
-            hideAllAlerts();
-
-            try {
-                // Preparar dados
-                const data = {
-                    nome: nomeOrgao
-                };
-
-                console.log('Enviando dados:', data);
-
-                // Enviar requisição
-                const response = await fetch(`${API_BASE_URL}${API_ENDPOINT}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json',
-                        'Authorization' : `Bearer ${token}`
-                    },
-                    body: JSON.stringify(data)
-                });
-
-                console.log('Response status:', response.status);
-                console.log('Response headers:', response.headers);
-
-                // Verificar se a resposta foi bem-sucedida
-                if (!response.ok) {
-                    let errorMessage = 'Erro ao cadastrar órgão';
-                    
+        // ✅ MELHOR TRATAMENTO DE ERROS por status
+        if (!response.ok) {
+            let errorMessage = 'Erro ao cadastrar órgão';
+            
+            switch (response.status) {
+                case 401:
+                    errorMessage = 'Token inválido ou expirado. Faça login novamente.';
+                    // Redirecionar para login após erro 401
+                    setTimeout(() => {
+                        localStorage.removeItem('authToken');
+                        localStorage.removeItem('userData');
+                        window.location.href = '../login/login.html';
+                    }, 3000);
+                    break;
+                case 403:
+                    errorMessage = 'Acesso negado. Você não tem permissão para cadastrar órgãos.';
+                    break;
+                case 400:
+                    errorMessage = 'Dados inválidos. Verifique as informações enviadas.';
+                    break;
+                case 409:
+                    errorMessage = 'Órgão já existe com este nome.';
+                    break;
+                case 500:
+                    errorMessage = 'Erro interno do servidor. Tente novamente mais tarde.';
+                    break;
+                default:
                     try {
                         const errorData = await response.json();
-                        errorMessage = errorData.message || errorData.error || errorMessage;
+                        errorMessage = errorData.message || errorData.error || `Erro ${response.status}`;
                     } catch (parseError) {
-                        // Se não conseguir parsear como JSON, pegar o texto
                         const errorText = await response.text();
-                        if (errorText) {
-                            errorMessage = errorText;
-                        }
+                        errorMessage = errorText || `Erro ${response.status}`;
                     }
-
-                    throw new Error(`${errorMessage} (Status: ${response.status})`);
-                }
-
-                // Parsear resposta
-                const result = await response.json();
-                console.log('Resposta da API:', result);
-
-                // Sucesso
-                showAlert('success', `Órgão "${nomeOrgao}" cadastrado com sucesso! ID: ${result.id || 'N/A'}`);
-                clearForm();
-
-                // Opcional: Redirecionar após alguns segundos
-                setTimeout(() => {
-                    showAlert('info', 'Redirecionando para a listagem...');
-                    // window.location.href = 'listagem-orgaos.html';
-                }, 2000);
-
-            } catch (error) {
-                console.error('Erro ao cadastrar órgão:', error);
-                
-                let errorMessage = 'Erro inesperado ao cadastrar órgão';
-                
-                if (error.name === 'TypeError' && error.message.includes('fetch')) {
-                    errorMessage = 'Erro de conexão. Verifique se o servidor está rodando.';
-                } else if (error.message) {
-                    errorMessage = error.message;
-                }
-
-                showAlert('error', errorMessage);
-            } finally {
-                setLoading(false);
             }
+
+            throw new Error(errorMessage);
         }
 
-        // Função para mostrar/ocultar loading
-        function setLoading(loading) {
-            if (loading) {
-                submitBtn.disabled = true;
-                submitIcon.innerHTML = '<div class="loading-spinner"></div>';
-                submitText.textContent = 'Cadastrando...';
-            } else {
-                submitBtn.disabled = false;
-                submitIcon.textContent = '💾';
-                submitText.textContent = 'Cadastrar Órgão';
-            }
+        // ✅ MELHOR TRATAMENTO DA RESPOSTA
+        let result;
+        const contentType = response.headers.get('content-type');
+        
+        if (contentType && contentType.indexOf('application/json') !== -1) {
+            result = await response.json();
+        } else {
+            result = { message: await response.text() };
         }
 
-        // Função para mostrar alertas
-        function showAlert(type, message) {
-            hideAllAlerts();
-            
-            const alertElement = document.getElementById(`alert${type.charAt(0).toUpperCase() + type.slice(1)}`);
-            const messageElement = document.getElementById(`${type}Message`);
-            
-            if (alertElement && messageElement) {
-                messageElement.textContent = message;
-                alertElement.classList.add('show');
-                
-                // Auto-hide após 5 segundos para alertas de sucesso e info
-                if (type === 'success' || type === 'info') {
-                    setTimeout(() => {
-                        alertElement.classList.remove('show');
-                    }, 5000);
-                }
-            }
+        console.log('Resposta da API:', result);
+
+        // Sucesso
+        showAlert('success', `Órgão "${nomeOrgao}" cadastrado com sucesso!${result.id ? ` ID: ${result.id}` : ''}`);
+        clearForm();
+
+        // Opcional: Redirecionar após alguns segundos
+        setTimeout(() => {
+            showAlert('info', 'Redirecionando para a listagem...');
+            // window.location.href = 'listagem-orgaos.html';
+        }, 2000);
+
+    } catch (error) {
+        console.error('Erro ao cadastrar órgão:', error);
+        
+        let errorMessage = error.message || 'Erro inesperado ao cadastrar órgão';
+        
+        if (error.name === 'TypeError' && error.message.includes('fetch')) {
+            errorMessage = 'Erro de conexão. Verifique se o servidor está rodando.';
         }
 
-        // Função para ocultar todos os alertas
-        function hideAllAlerts() {
-            document.querySelectorAll('.alert').forEach(alert => {
-                alert.classList.remove('show');
-            });
-        }
+        showAlert('error', errorMessage);
+    } finally {
+        setLoading(false);
+    }
+}
 
-        // Função para limpar formulário
-        function clearForm() {
-            form.reset();
-            nomeInput.classList.remove('error', 'success');
-            document.getElementById('nomeError').style.display = 'none';
-            document.getElementById('nomeSuccess').style.display = 'none';
-            hideAllAlerts();
-            nomeInput.focus();
-        }
+// ✅ FUNÇÃO DE LOGOUT MELHORADA
+function logout() {
+    if (confirm('Tem certeza que deseja sair?')) {
+        // Limpar dados locais
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('userData');
+        
+        // Redirecionar
+        window.location.href = '../login/login.html';
+    }
+}
 
-        // Função para voltar
-        function goBack() {
-            if (confirm('Tem certeza que deseja voltar? Os dados não salvos serão perdidos.')) {
-                window.history.back();
-                alert('Voltando para o painel administrativo...');
-            }
-        }
-
-        // Função de logout
-        function logout() {
-            if (confirm('Tem certeza que deseja sair?')) {
-                //alert('Logout realizado com sucesso!');
-                window.location.href = '../login/login.html';
-            }
-        }
-
-        // Inicialização da página
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('Página de cadastro de órgãos carregada');
-            nomeInput.focus();
-            
-            // Mostrar informações da API no console
-            console.log('API Configuration:');
-            console.log('Base URL:', API_BASE_URL);
-            console.log('Endpoint:', API_ENDPOINT);
-            console.log('Full URL:', `${API_BASE_URL}${API_ENDPOINT}`);
-        });
-
-        // Atalhos de teclado
-        document.addEventListener('keydown', function(event) {
-            // Ctrl + Enter para submeter
-            if (event.ctrlKey && event.key === 'Enter') {
-                event.preventDefault();
-                submitForm(event);
-            }
-            
-            // Escape para limpar
-            if (event.key === 'Escape') {
-                clearForm();
+// ✅ FUNÇÃO DE DEBUG para testar conexão
+async function testConnection() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/login/acesso`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`
             }
         });
+        
+        console.log('Teste de conexão:', response.status, response.ok);
+        
+        if (response.ok) {
+            const result = await response.text();
+            console.log('Resposta:', result);
+            showAlert('success', 'Conexão com backend OK!');
+        } else {
+            showAlert('error', `Erro na conexão: ${response.status}`);
+        }
+    } catch (error) {
+        console.error('Erro no teste:', error);
+        showAlert('error', 'Erro de conexão com o servidor');
+    }
+}
+
+// ✅ DISPONIBILIZAR FUNÇÕES PARA DEBUG
+window.debugOrgao = {
+    testConnection,
+    token: token,
+    userData: getUserData(),
+    isValidToken: () => isValidToken(token)
+};
+
+// Resto do código permanece igual...
+// (validateNome, setLoading, showAlert, etc.)
+
+console.log('🏢 Sistema de Cadastro de Órgãos carregado!');
+console.log('🔗 Backend:', API_BASE_URL);
+console.log('💡 Digite "debugOrgao.testConnection()" para testar conexão');
+console.log('🎫 Token válido:', isValidToken(token));

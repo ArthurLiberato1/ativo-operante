@@ -476,11 +476,11 @@
                             <span class="dropdown-arrow">▼</span>
                         </button>
                         <div class="dropdown-menu">
-                            <a href="#" class="dropdown-item" onclick="navigateTo('orgaos-cadastro')">
+                            <a href="../orgao/pageCadastroOrgao.html" class="dropdown-item" >
                                 <span class="icon">➕</span>
                                 Cadastro
                             </a>
-                            <a href="#" class="dropdown-item" onclick="navigateTo('orgaos-listagem')">
+                            <a href="../orgao/pageListarOrgao.html" class="dropdown-item">
                                 <span class="icon">📋</span>
                                 Listagem
                             </a>
@@ -499,11 +499,11 @@
                             <span class="dropdown-arrow">▼</span>
                         </button>
                         <div class="dropdown-menu">
-                            <a href="#" class="dropdown-item" onclick="navigateTo('tipos-cadastro')">
+                            <a href="../tipo/pageCadastroTipo.html" class="dropdown-item" onclick="navigateTo('tipos-cadastro')">
                                 <span class="icon">➕</span>
                                 Cadastro
                             </a>
-                            <a href="#" class="dropdown-item" onclick="navigateTo('tipos-listagem')">
+                            <a href="../tipo/pageListarTipo.html" class="dropdown-item" onclick="navigateTo('tipos-listagem')">
                                 <span class="icon">📋</span>
                                 Listagem
                             </a>
@@ -522,39 +522,17 @@
                             <span class="dropdown-arrow">▼</span>
                         </button>
                         <div class="dropdown-menu">
-                            <a href="#" class="dropdown-item" onclick="navigateTo('denuncias-cadastro')">
-                                <span class="icon">➕</span>
-                                Cadastro
+                            <a href="../denuncia/pageGerenciarDenuncia.html" class="dropdown-item" onclick="navigateTo('denuncias-cadastro')">
+                                <span class="nav-icon">⚙️</span>
+                                Gerenciar
                             </a>
-                            <a href="#" class="dropdown-item" onclick="navigateTo('denuncias-listagem')">
-                                <span class="icon">📋</span>
-                                Listagem
-                            </a>
+                            
                         </div>
                     </div>
                 </div>
 
-                <div class="sidebar-title" style="margin-top: 30px;">Sistema</div>
                 
-                <!-- Configurações -->
-                <div class="sidebar-section">
-                    <a href="#" class="nav-link" onclick="setActiveNav(this)">
-                        <div style="display: flex; align-items: center;">
-                            <span class="nav-icon">⚙️</span>
-                            <span class="nav-text">Configurações</span>
-                        </div>
-                    </a>
-                </div>
-
-                <!-- Relatórios -->
-                <div class="sidebar-section">
-                    <a href="#" class="nav-link" onclick="setActiveNav(this)">
-                        <div style="display: flex; align-items: center;">
-                            <span class="nav-icon">📈</span>
-                            <span class="nav-text">Relatórios</span>
-                        </div>
-                    </a>
-                </div>
+                
             </div>
         </nav>
 
@@ -673,7 +651,7 @@
                 'denuncias-listagem': 'Listagem de Denúncias'
             };
             
-            alert('Navegando para: ' + pageNames[page]);
+            //alert('Navegando para: ' + pageNames[page]);
             
             // Close sidebar on mobile after navigation
             if (window.innerWidth <= 768) {

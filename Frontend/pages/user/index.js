@@ -322,7 +322,7 @@ function logout() {
         localStorage.removeItem('userData');
         
         // Redirecionar para login
-        window.location.href = '../login.html'; // Ajustar caminho conforme necessário
+        window.location.href = '../login/login.html'; // Ajustar caminho conforme necessário
     }
 }
 

@@ -1347,7 +1347,7 @@ function logout() {
     if (confirm('Tem certeza que deseja sair do painel administrativo?')) {
         console.log('👋 Admin fazendo logout...');
         localStorage.removeItem('userData');
-        window.location.href = '../login.html';
+        window.location.href = '../login/login.html';
     }
 }
 

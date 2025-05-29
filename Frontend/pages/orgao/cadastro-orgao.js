@@ -2,6 +2,8 @@
         const API_BASE_URL = 'http://localhost:8080';
         const API_ENDPOINT = '/apis/orgaos';
 
+
+        const token = localStorage.getItem("token");
         // Elementos do DOM
         const form = document.getElementById('orgaoForm');
         const nomeInput = document.getElementById('nomeOrgao');
@@ -80,7 +82,7 @@
             try {
                 // Preparar dados
                 const data = {
-                    nomeOrgao: nomeOrgao
+                    nome: nomeOrgao
                 };
 
                 console.log('Enviando dados:', data);
@@ -90,7 +92,8 @@
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Accept': 'application/json'
+                        'Accept': 'application/json',
+                        'Authorization' : `Bearer ${token}`
                     },
                     body: JSON.stringify(data)
                 });
@@ -200,7 +203,7 @@
         // Função para voltar
         function goBack() {
             if (confirm('Tem certeza que deseja voltar? Os dados não salvos serão perdidos.')) {
-                // window.history.back();
+                window.history.back();
                 alert('Voltando para o painel administrativo...');
             }
         }
@@ -208,8 +211,8 @@
         // Função de logout
         function logout() {
             if (confirm('Tem certeza que deseja sair?')) {
-                alert('Logout realizado com sucesso!');
-                // window.location.href = 'login.html';
+                //alert('Logout realizado com sucesso!');
+                window.location.href = '../login/login.html';
             }
         }
 

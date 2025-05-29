@@ -27,7 +27,7 @@
             border-radius: 20px;
             box-shadow: 0 20px 40px rgba(153, 1, 0, 0.2);
             width: 100%;
-            max-width: 400px;
+            max-width: 450px;
             transform: translateY(0);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             border: 1px solid #E8E8E8;
@@ -55,6 +55,40 @@
             font-size: 14px;
         }
 
+        /* Mode Toggle */
+        .mode-toggle {
+            display: flex;
+            background: #E8E8E8;
+            border-radius: 25px;
+            padding: 4px;
+            margin-bottom: 30px;
+        }
+
+        .mode-btn {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: transparent;
+            color: #666;
+        }
+
+        .mode-btn.active {
+            background: linear-gradient(135deg, #B90504 0%, #990100 100%);
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(185, 5, 4, 0.3);
+        }
+
+        .mode-btn:hover:not(.active) {
+            color: #333;
+            background: rgba(185, 5, 4, 0.1);
+        }
+
         .form-group {
             margin-bottom: 25px;
             position: relative;
@@ -66,6 +100,11 @@
             font-size: 14px;
             font-weight: 600;
             margin-bottom: 8px;
+        }
+
+        .form-group label .required {
+            color: #B90504;
+            margin-left: 4px;
         }
 
         .form-group input {
@@ -90,7 +129,37 @@
             border-color: #990100;
         }
 
-        .login-btn {
+        .form-group input.error {
+            border-color: #dc3545;
+            box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+        }
+
+        .form-group input.success {
+            border-color: #28a745;
+            box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
+        }
+
+        .form-help {
+            font-size: 12px;
+            color: #666;
+            margin-top: 6px;
+        }
+
+        .form-error {
+            font-size: 12px;
+            color: #dc3545;
+            margin-top: 6px;
+            display: none;
+        }
+
+        .form-success {
+            font-size: 12px;
+            color: #28a745;
+            margin-top: 6px;
+            display: none;
+        }
+
+        .submit-btn {
             width: 100%;
             padding: 15px;
             background: linear-gradient(135deg, #B90504 0%, #990100 100%);
@@ -104,17 +173,17 @@
             margin-bottom: 20px;
         }
 
-        .login-btn:hover {
+        .submit-btn:hover:not(:disabled) {
             transform: translateY(-2px);
             box-shadow: 0 10px 20px rgba(185, 5, 4, 0.3);
             background: linear-gradient(135deg, #990100 0%, #B90504 100%);
         }
 
-        .login-btn:active {
+        .submit-btn:active {
             transform: translateY(0);
         }
 
-        .login-btn:disabled {
+        .submit-btn:disabled {
             opacity: 0.7;
             cursor: not-allowed;
             transform: none;
@@ -130,11 +199,13 @@
             opacity: 0;
             transform: translateY(-10px);
             transition: all 0.3s ease;
+            display: none;
         }
 
         .message.show {
             opacity: 1;
             transform: translateY(0);
+            display: block;
         }
 
         .message.success {
@@ -147,6 +218,12 @@
             background: #F8E8E8;
             color: #990100;
             border: 1px solid #E8E8E8;
+        }
+
+        .message.info {
+            background: #E8F4FD;
+            color: #0C5460;
+            border: 1px solid #B3D7FF;
         }
 
         .forgot-password {
@@ -180,7 +257,32 @@
             to { transform: rotate(360deg); }
         }
 
-        .demo-users {
+        /* Hidden by default */
+        .form-section {
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Two column layout for names */
+        .name-row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .name-row .form-group {
+            flex: 1;
+        }
+
+        .demo-info {
             background: #E8E8E8;
             padding: 15px;
             border-radius: 8px;
@@ -188,43 +290,121 @@
             border-left: 4px solid #B90504;
         }
 
-        .demo-users h3 {
+        .demo-info h3 {
             color: #333333;
             font-size: 14px;
             margin-bottom: 10px;
         }
 
-        .demo-users p {
+        .demo-info p {
             color: #990100;
             font-size: 12px;
             margin-bottom: 5px;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 30px 20px;
+                max-width: 100%;
+            }
+
+            .name-row {
+                flex-direction: column;
+                gap: 0;
+            }
+
+            .mode-btn {
+                padding: 10px 15px;
+                font-size: 13px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="login-container">
         <div class="login-header">
-            <h1>Bem-vindo</h1>
-            <p>Faça login para acessar sua conta</p>
+            <h1 id="pageTitle">Bem-vindo</h1>
+            <p id="pageSubtitle">Faça login para acessar sua conta</p>
+        </div>
+
+        <!-- Mode Toggle -->
+        <div class="mode-toggle">
+            <button class="mode-btn active" id="loginModeBtn">
+                Entrar
+            </button>
+            <button class="mode-btn" id="registerModeBtn">
+                Cadastrar-se
+            </button>
         </div>
 
         <div id="message" class="message"></div>
 
-        <form id="loginForm">
-            <div class="form-group">
-                <label for="email">E-mail</label>
-                <input type="email" id="email" name="email" required>
-            </div>
+        <!-- Login Form -->
+        <div id="loginSection" class="form-section active">
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email">E-mail <span class="required">*</span></label>
+                    <input type="email" id="email" name="email" required>
+                    <div class="form-error" id="loginEmailError"></div>
+                </div>
 
-            <div class="form-group">
-                <label for="password">Senha</label>
-                <input type="password" id="password" name="password" required>
-            </div>
+                <div class="form-group">
+                    <label for="password">Senha <span class="required">*</span></label>
+                    <input type="password" id="password" name="password" required>
+                    <div class="form-error" id="loginPasswordError"></div>
+                </div>
 
-            <button type="submit" class="login-btn" id="loginBtn">
-                Entrar
-            </button>
-        </form>
+                <button type="submit" class="submit-btn" id="loginBtn">
+                    Entrar
+                </button>
+            </form>
+
+           
+
+           
+        </div>
+
+        <!-- Register Form -->
+        <div id="registerSection" class="form-section">
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="cpf">CPF <span class="required">*</span></label>
+                    <input type="text" id="cpf" name="cpf" required maxlength="14" placeholder="000.000.000-00">
+                    <div class="form-help">Digite apenas números ou com formatação</div>
+                    <div class="form-error" id="cpfError"></div>
+                    <div class="form-success" id="cpfSuccess"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="registerEmail">E-mail <span class="required">*</span></label>
+                    <input type="email" id="registerEmail" name="email" required maxlength="100">
+                    <div class="form-help">Será usado para login e comunicações</div>
+                    <div class="form-error" id="registerEmailError"></div>
+                    <div class="form-success" id="registerEmailSuccess"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="registerPassword">Senha <span class="required">*</span></label>
+                    <input type="password" id="registerPassword" name="password" required minlength="6">
+                    <div class="form-help">Mínimo 6 caracteres</div>
+                    <div class="form-error" id="registerPasswordError"></div>
+                    <div class="form-success" id="registerPasswordSuccess"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword">Confirmar Senha <span class="required">*</span></label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" required>
+                    <div class="form-help">Digite a senha novamente</div>
+                    <div class="form-error" id="confirmPasswordError"></div>
+                    <div class="form-success" id="confirmPasswordSuccess"></div>
+                </div>
+
+                <button type="submit" class="submit-btn" id="registerBtn">
+                    Criar Conta
+                </button>
+            </form>
+        </div>
     </div>
 
     <script src="index.js"></script>

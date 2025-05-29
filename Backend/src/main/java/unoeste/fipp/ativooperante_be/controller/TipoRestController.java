@@ -39,7 +39,7 @@ public class TipoRestController {
 
     @GetMapping("/buscar-nome/{nome}")
     public ResponseEntity<Object> getTipoNome(@PathVariable String nome){
-        Tipo aux = tipoService.getOrgaoNome(nome);
+        Tipo aux = tipoService.getTipoNome(nome);
         if(aux!=null)
             return ResponseEntity.ok(aux);
 
